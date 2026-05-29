@@ -1,10 +1,195 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>My Website</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMANCEPTION</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+background:#0b1f3a;
+color:white;
+}
+
+header{
+padding:20px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#08172c;
+position:sticky;
+top:0;
+}
+
+.logo{
+font-size:30px;
+font-weight:bold;
+letter-spacing:2px;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+}
+
+.hero{
+text-align:center;
+padding:100px 20px;
+}
+
+.hero h1{
+font-size:60px;
+margin-bottom:15px;
+}
+
+.hero p{
+font-size:20px;
+opacity:.8;
+margin-bottom:30px;
+}
+
+.btn{
+display:inline-block;
+padding:14px 28px;
+background:#1e90ff;
+color:white;
+text-decoration:none;
+border-radius:10px;
+font-weight:bold;
+margin:10px;
+}
+
+.section{
+padding:60px 8%;
+}
+
+.card{
+background:#112a4d;
+padding:25px;
+border-radius:15px;
+margin-top:20px;
+}
+
+footer{
+text-align:center;
+padding:25px;
+background:#08172c;
+margin-top:50px;
+}
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.8);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.popup-box{
+background:#112a4d;
+padding:30px;
+border-radius:15px;
+text-align:center;
+max-width:350px;
+width:90%;
+}
+
+.popup-box h2{
+margin-bottom:15px;
+}
+
+.popup-box button{
+padding:12px 25px;
+border:none;
+background:#1e90ff;
+color:white;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+margin-top:10px;
+}
+</style>
 </head>
+
 <body>
-<h1>Welcome to My Website</h1>
-<p>Hello World!</p>
+
+<div class="popup" id="popup">
+<div class="popup-box">
+<h2>Join Our Telegram Channel</h2>
+<p>Get instant updates and announcements.</p>
+<button onclick="joinTelegram()">Join Now</button>
+</div>
+</div>
+
+<header>
+<div class="logo">AMANCEPTION</div>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+</nav>
+</header>
+
+<section class="hero" id="home">
+<h1>AMANCEPTION</h1>
+<p>Your Sports Community Hub</p>
+
+<a href="https://t.me/amanception" target="_blank" class="btn">
+Join Telegram
+</a>
+
+<a href="#contact" class="btn">
+Contact Us
+</a>
+</section>
+
+<section class="section" id="about">
+<h2>About Us</h2>
+
+<div class="card">
+<p>
+Welcome to AMANCEPTION. Stay connected with sports discussions,
+community updates and announcements through our Telegram channel.
+</p>
+</div>
+</section>
+
+<section class="section" id="contact">
+<h2>Contact Us</h2>
+
+<div class="card">
+<p>Email: contact@amanception.com</p>
+<br>
+<a href="https://t.me/amanception" target="_blank" class="btn">
+Telegram Support
+</a>
+</div>
+</section>
+
+<footer>
+© 2026 AMANCEPTION | All Rights Reserved
+</footer>
+
+<script>
+function joinTelegram(){
+window.open("https://t.me/amanception","_blank");
+document.getElementById("popup").style.display="none";
+}
+</script>
+
 </body>
 </html>
