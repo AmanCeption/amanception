@@ -691,6 +691,41 @@ document.getElementById("popup").style.display="none";
 }
 
 </script>
+<script>
 
+// JOIN TELEGRAM
+function joinTelegram(){
+window.open("https://t.me/amanception","_blank");
+document.getElementById("popup").style.display="none";
+}
+
+// ALREADY JOINED
+function closePopup(){
+document.getElementById("popup").style.display="none";
+}
+
+// BACK TO TOP BUTTON
+const backToTop = document.getElementById("backToTop");
+
+window.addEventListener("scroll", function(){
+
+if(window.scrollY > 300){
+backToTop.style.display = "block";
+}else{
+backToTop.style.display = "none";
+}
+
+});
+
+backToTop.addEventListener("click", function(){
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+});
+
+</script>
 </body>
 </html>
