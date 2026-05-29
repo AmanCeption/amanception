@@ -4,7 +4,63 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AMANCEPTION</title>
+@media screen and (max-width: 768px){
 
+.logo{
+font-size:22px;
+}
+
+.hero{
+padding:60px 15px;
+}
+
+.hero h1{
+font-size:38px;
+}
+
+.hero p{
+font-size:16px;
+}
+
+nav{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:10px;
+}
+
+nav a{
+margin-left:0;
+font-size:14px;
+}
+
+.btn{
+display:block;
+width:100%;
+max-width:280px;
+margin:10px auto;
+text-align:center;
+}
+
+.section{
+padding:40px 5%;
+}
+
+.popup-box{
+width:95%;
+padding:20px;
+}
+
+video{
+width:100%;
+height:auto;
+border-radius:10px;
+}
+
+.card{
+padding:15px;
+}
+}
 <style>
 *{
 margin:0;
@@ -46,7 +102,7 @@ padding:100px 20px;
 }
 
 .hero h1{
-font-size:60px;
+font-size:clamp(36px,8vw,60px);
 margin-bottom:15px;
 }
 
@@ -197,4 +253,4 @@ document.getElementById("popup").style.display="none";
 </script>
 
 </body>
-</html>
+</html>
