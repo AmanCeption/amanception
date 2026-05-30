@@ -14,7 +14,7 @@ body{background:#000;color:#fff}
 header{position:sticky;top:0;background:#000;border-bottom:1px solid #222;padding:18px;display:flex;justify-content:space-between;align-items:center;z-index: 100;}
 .logo{font-size:30px;font-weight:900;color:#000;-webkit-text-stroke:1px #fff}
 nav a{color:#fff;text-decoration:none;margin-left:16px}
-.hero{min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
+.hero{min-height:50vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
 .hero h1{font-size:clamp(40px,8vw,90px)}
 .hero p{color:#bbb;margin:15px 0 25px}
 .btn{display:inline-block;padding:12px 24px;background:#fff;color:#000;text-decoration:none;border-radius:10px;font-weight:bold}
@@ -93,7 +93,6 @@ nav a{color:#fff;text-decoration:none;margin-left:16px}
 .already{background:#222;color:#fff}
 footer{text-align:center;padding:30px;border-top:1px solid #222}
 
-/* Mobile Layout */
 @media(max-width: 768px) {
     .stream-container {
         flex-direction: column;
@@ -146,10 +145,11 @@ footer{text-align:center;padding:30px;border-top:1px solid #222}
         <div class="channel-sidebar">
             <div class="sidebar-header">Select Channel</div>
             <ul class="channel-list" id="channels">
-    <li class="channel-item active" data-src="https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8">Akamai Test Channel</li>
-    <li class="channel-item" data-src="https://sonydaimenew.akamaized.net/hls/live/2018457/RG_Phili3005/ENG/master_1300.m3u8">Sony Live Match</li>
-</ul>        
+                <li class="channel-item active" data-src="https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8">Akamai Test Stream</li>
+                <li class="channel-item" data-src="https://sonydaimenew.akamaized.net/hls/live/2018457/RG_Phili3005/ENG/hdntl=exp=1780229175~acl=%2f*~id=67837894-f89f-4ff1-90e0-7682997032db~data=hdntl,2018457,RG_Phili3005,ENG~hmac=f5638a6f2101e5b8514e2cdbe03e718b43f13dcd75b3aacbeef38931b102b5c2/master_1300.m3u8?aka_me_session_id=AAAAAAAAAAA3JBxqAAAAAAuFSUHux%2f0wrqcxnotL3CacG1BDhdhBMbxZvwc2MGE1ndPUXfutnvtRFJEurtLqfwxlJ0iO51iH&aka_media_format_type=hls&originpath=/linear/hls/pb/event/X3j0O-G-QEaPSp8yNcP9Jg/stream/372515ef-2295-4ab0-acfd-36e428793caf:SIN/variant/501cabfe8acfd71176cbe7d307f81390/bandwidth/1552456.m3u8">Sony Ten Live</li>
+            </ul>
         </div>
+        
         <div class="player-area">
             <video id="my-iptv-player" class="video-js vjs-theme-city" controls preload="auto" autoplay muted playsinline></video>
         </div>
@@ -179,6 +179,8 @@ footer{text-align:center;padding:30px;border-top:1px solid #222}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.10.0/video.min.js"></script>
 
 <script>
+const PROXY_URL = "https://iptvproxy.amanception.workers.dev/";
+
 function joinTelegram(){
     window.open('https://t.me/amanception','_blank');
     document.getElementById('popup').style.display='none';
@@ -191,27 +193,24 @@ function closePopup(){
 const player = videojs('my-iptv-player', {
     fluid: true,
     preload: 'auto',
-    html5: {
-        vhs: { overrideNative: true }
-    }
+    html5: { vhs: { overrideNative: true } }
 });
-
-// 🌟 FIXED STABLE HOOK: Native interceptor for modern Video.js engine
-videojs.Vhs.xhr.beforeRequest = function(options) {
-    options.headers = options.headers || {};
-    options.headers['X-Requested-With'] = 'XMLHttpRequest';
-    return options;
-};
 
 const channelItems = document.querySelectorAll('.channel-item');
 
 function changeChannel(rawUrl) {
-    console.log("Streaming direct resource path:", rawUrl);
+    // 🌟 CORRECTED ROUTING: Hamesha worker ke raste se guzaaro CORS bypass ke liye
+    const finalProxyUrl = PROXY_URL + "?url=" + encodeURIComponent(rawUrl.trim());
+    console.log("Routing via Proxy Engine:", finalProxyUrl);
+    
     player.src({
-        src: rawUrl,
+        src: finalProxyUrl,
         type: 'application/x-mpegURL'
     });
-    player.play().catch(e => console.log("Autoplay tracked."));
+    
+    player.ready(function() {
+        player.play().catch(e => console.log("Autoplay tracker:", e));
+    });
 }
 
 channelItems.forEach(item => {
