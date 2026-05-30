@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AMANCEPTION</title>
 
+<!-- Cloudflare CDN for Video.js Layout -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.10.0/video-js.min.css" />
 <link href="https://unpkg.com/@videojs/themes@1.0.1/dist/city/index.css" rel="stylesheet">
 
@@ -22,7 +23,7 @@ nav a{color:#fff;text-decoration:none;margin-left:16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
 .card{background:#111;border:1px solid #222;border-radius:14px;padding:20px;text-align:center}
 
-/* IPTV Streaming Section Custom Layout */
+/* IPTV Streaming Section Layout */
 .stream-container {
     display: flex;
     max-width: 1200px;
@@ -93,7 +94,7 @@ nav a{color:#fff;text-decoration:none;margin-left:16px}
 .already{background:#222;color:#fff}
 footer{text-align:center;padding:30px;border-top:1px solid #222}
 
-/* Mobile Responsive adjustment for Stream Box */
+/* Mobile Responsive adjustment */
 @media(max-width: 768px) {
     .stream-container {
         flex-direction: column;
@@ -104,7 +105,7 @@ footer{text-align:center;padding:30px;border-top:1px solid #222}
         height: 180px;
     }
     .player-area {
-        order: -1; /* Video mobile me upar dikhegi, channels neeche */
+        order: -1;
         height: 230px;
         width: 100%;
     }
@@ -146,8 +147,9 @@ footer{text-align:center;padding:30px;border-top:1px solid #222}
         <div class="channel-sidebar">
             <div class="sidebar-header">Select Channel</div>
             <ul class="channel-list" id="channels">
-    <li class="channel-item active" data-src="https://sonydaimenew.akamaized.net/hls/live/2018457/RG_Phili3005/ENG/hdntl=exp=1780229175~acl=%2f*~id=67837894-f89f-4ff1-90e0-7682997032db~data=hdntl,2018457,RG_Phili3005,ENG~hmac=f5638a6f2101e5b8514e2cdbe03e718b43f13dcd75b3aacbeef38931b102b5c2/master_1300.m3u8?aka_me_session_id=AAAAAAAAAAA3JBxqAAAAAAuFSUHux%2f0wrqcxnotL3CacG1BDhdhBMbxZvwc2MGE1ndPUXfutnvtRFJEurtLqfwxlJ0iO51iH&aka_media_format_type=hls&originpath=/linear/hls/pb/event/X3j0O-G-QEaPSp8yNcP9Jg/stream/372515ef-2295-4ab0-acfd-36e428793caf:SIN/variant/501cabfe8acfd71176cbe7d307f81390/bandwidth/1552456.m3u8">Test Stream (Mux)</li>
-    <li class="channel-item" data-src="https://playertest.longtailvideo.com/adaptive/bipbop/bipbop.m3u8">Test Stream 2</li>
+                <!-- 🌟 FIXED: Premium Akamai Tokenized Link Injected Completely -->
+                <li class="channel-item active" data-src="https://sonydaimenew.akamaized.net/hls/live/2018457/RG_Phili3005/ENG/hdntl=exp=1780229175~acl=%2f*~id=67837894-f89f-4ff1-90e0-7682997032db~data=hdntl,2018457,RG_Phili3005,ENG~hmac=f5638a6f2101e5b8514e2cdbe03e718b43f13dcd75b3aacbeef38931b102b5c2/master_1300.m3u8?aka_me_session_id=AAAAAAAAAAA3JBxqAAAAAAuFSUHux%2f0wrqcxnotL3CacG1BDhdhBMbxZvwc2MGE1ndPUXfutnvtRFJEurtLqfwxlJ0iO51iH&aka_media_format_type=hls&originpath=/linear/hls/pb/event/X3j0O-G-QEaPSp8yNcP9Jg/stream/372515ef-2295-4ab0-acfd-36e428793caf:SIN/variant/501cabfe8acfd71176cbe7d307f81390/bandwidth/1552456.m3u8">SONY TEN MATCH</li>
+                <li class="channel-item" data-src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">Backup Demo Stream</li>
             </ul>
         </div>
         
@@ -180,7 +182,6 @@ footer{text-align:center;padding:30px;border-top:1px solid #222}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.10.0/video.min.js"></script>
 
 <script>
-// 🌟 FIXED: Added 'https://' protocol to avoid worker block errors
 const PROXY_URL = "https://iptvproxy.amanception.workers.dev/";
 
 function joinTelegram(){
@@ -191,17 +192,29 @@ function closePopup(){
     document.getElementById('popup').style.display='none';
 }
 
-// Video.js Player Logic
+// 🌟 ADVANCED: Strict mode for dynamic HLS Manifest handling
 const player = videojs('my-iptv-player', {
     fluid: true,
-    userActions: { hotkeys: true }
+    preload: 'auto',
+    html5: {
+        vhs: { 
+            overrideNative: true,
+            handleManifestRedirects: true
+        }
+    }
 });
 
 const channelItems = document.querySelectorAll('.channel-item');
 
 function changeChannel(rawUrl) {
-    // Worker proxy ke sath secure link inject karna
-    const finalUrl = PROXY_URL + "?url=" + encodeURIComponent(rawUrl);
+    let finalUrl = rawUrl;
+    
+    // Test stream bina proxy ke chalegi, premium links proxy se wrap honge
+    if (!rawUrl.includes("test-streams")) {
+        finalUrl = PROXY_URL + "?url=" + encodeURIComponent(rawUrl);
+    }
+
+    console.log("Routing via Advance Manifest Proxy:", finalUrl);
 
     player.src({
         src: finalUrl,
@@ -210,7 +223,7 @@ function changeChannel(rawUrl) {
     
     player.ready(function() {
         player.play().catch(function(error) {
-            console.log("Autoplay block tracker:", error);
+            console.log("Autoplay block tracker handled:", error);
         });
     });
 }
