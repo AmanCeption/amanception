@@ -22,7 +22,7 @@ nav a{color:#fff;text-decoration:none;margin-left:16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
 .card{background:#111;border:1px solid #222;border-radius:14px;padding:20px;text-align:center}
 
-/* IPTV Streaming Section Layout */
+/* IPTV Streaming Section Custom Layout */
 .stream-container {
     display: flex;
     max-width: 1200px;
@@ -145,8 +145,9 @@ footer{text-align:center;padding:30px;border-top:1px solid #222}
         <div class="channel-sidebar">
             <div class="sidebar-header">Select Channel</div>
             <ul class="channel-list" id="channels">
-                <li class="channel-item active" data-src="https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8">Akamai Test Stream</li>
-                <li class="channel-item" data-src="https://sonydaimenew.akamaized.net/hls/live/2018457/RG_Phili3005/ENG/hdntl=exp=1780229175~acl=%2f*~id=67837894-f89f-4ff1-90e0-7682997032db~data=hdntl,2018457,RG_Phili3005,ENG~hmac=f5638a6f2101e5b8514e2cdbe03e718b43f13dcd75b3aacbeef38931b102b5c2/master_1300.m3u8?aka_me_session_id=AAAAAAAAAAA3JBxqAAAAAAuFSUHux%2f0wrqcxnotL3CacG1BDhdhBMbxZvwc2MGE1ndPUXfutnvtRFJEurtLqfwxlJ0iO51iH&aka_media_format_type=hls&originpath=/linear/hls/pb/event/X3j0O-G-QEaPSp8yNcP9Jg/stream/372515ef-2295-4ab0-acfd-36e428793caf:SIN/variant/501cabfe8acfd71176cbe7d307f81390/bandwidth/1552456.m3u8">Sony Ten Live</li>
+                <li class="channel-item active" data-src="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8">Mux Test Stream</li>
+                <li class="channel-item" data-src="https://playertest.longtailvideo.com/adaptive/bipbop/bipbop.m3u8">BipBop Test Stream</li>
+                <li class="channel-item" data-src="https://sonydaimenew.akamaized.net/hls/live/2018457/RG_Phili3005/ENG/master_1300.m3u8">Sony Ten Live (Expired Token)</li>
             </ul>
         </div>
         
@@ -189,27 +190,35 @@ function closePopup(){
     document.getElementById('popup').style.display='none';
 }
 
-// Player initialization
+// 🌟 OPTIMIZED PLAYER ENGINE FOR HLS WRAPPING
 const player = videojs('my-iptv-player', {
     fluid: true,
     preload: 'auto',
-    html5: { vhs: { overrideNative: true } }
+    controls: true,
+    html5: {
+        vhs: {
+            overrideNative: true,
+            allowSeeksWithinLiveWindow: true
+        }
+    }
 });
 
 const channelItems = document.querySelectorAll('.channel-item');
 
 function changeChannel(rawUrl) {
-    // 🌟 CORRECTED ROUTING: Hamesha worker ke raste se guzaaro CORS bypass ke liye
-    const finalProxyUrl = PROXY_URL + "?url=" + encodeURIComponent(rawUrl.trim());
-    console.log("Routing via Proxy Engine:", finalProxyUrl);
-    
+    // URL encode karke proxy ke through route karna
+    const finalUrl = PROXY_URL + "?url=" + encodeURIComponent(rawUrl.trim());
+    console.log("Routing via Engine:", finalUrl);
+
     player.src({
-        src: finalProxyUrl,
+        src: finalUrl,
         type: 'application/x-mpegURL'
     });
     
     player.ready(function() {
-        player.play().catch(e => console.log("Autoplay tracker:", e));
+        player.play().catch(function(error) {
+            console.log("Autoplay context handled:", error);
+        });
     });
 }
 
