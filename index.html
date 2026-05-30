@@ -105,7 +105,8 @@ footer{text-align:center;padding:30px;border-top:1px solid #222}
     }
     .player-area {
         order: -1; /* Video mobile me upar dikhegi, channels neeche */
-        height: 250px;
+        height: 230px;
+        width: 100%;
     }
 }
 </style>
@@ -179,8 +180,8 @@ footer{text-align:center;padding:30px;border-top:1px solid #222}
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
 <script>
-// ⚠️ EDIT HERE: Apna Cloudflare Worker Proxy URL yahan lagao (last me '/' zaroor lagana)
-const PROXY_URL = "iptvproxy.amanception.workers.dev/";
+// 🌟 FIXED: Added 'https://' protocol to avoid worker block errors
+const PROXY_URL = "https://iptvproxy.amanception.workers.dev/";
 
 function joinTelegram(){
     window.open('https://t.me/amanception','_blank');
@@ -209,7 +210,7 @@ function changeChannel(rawUrl) {
     
     player.ready(function() {
         player.play().catch(function(error) {
-            console.log("Autoplay context require handling:", error);
+            console.log("Autoplay block tracker:", error);
         });
     });
 }
