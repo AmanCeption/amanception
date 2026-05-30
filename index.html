@@ -4,81 +4,229 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AMANCEPTION</title>
+
+<link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+<link href="https://unpkg.com/@videojs/themes@1.0.1/dist/city/index.css" rel="stylesheet">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#000;color:#fff}
-header{position:sticky;top:0;background:#000;border-bottom:1px solid #222;padding:18px;display:flex;justify-content:space-between;align-items:center}
+header{position:sticky;top:0;background:#000;border-bottom:1px solid #222;padding:18px;display:flex;justify-content:space-between;align-items:center;z-index: 100;}
 .logo{font-size:30px;font-weight:900;color:#000;-webkit-text-stroke:1px #fff}
 nav a{color:#fff;text-decoration:none;margin-left:16px}
-.hero{min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
+.hero{min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
 .hero h1{font-size:clamp(40px,8vw,90px)}
 .hero p{color:#bbb;margin:15px 0 25px}
 .btn{display:inline-block;padding:12px 24px;background:#fff;color:#000;text-decoration:none;border-radius:10px;font-weight:bold}
-.section{padding:60px 20px}
+.section{padding:40px 20px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
 .card{background:#111;border:1px solid #222;border-radius:14px;padding:20px;text-align:center}
-.popup{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;justify-content:center;align-items:center}
+
+/* IPTV Streaming Section Custom Layout */
+.stream-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 550px;
+}
+.channel-sidebar {
+    width: 280px;
+    background: #161616;
+    border-right: 1px solid #222;
+    display: flex;
+    flex-direction: column;
+}
+.sidebar-header {
+    padding: 15px;
+    font-weight: bold;
+    background: #1f1f1f;
+    border-bottom: 1px solid #222;
+    color: #0084ff;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+.channel-list {
+    list-style: none;
+    overflow-y: auto;
+    flex: 1;
+}
+.channel-item {
+    padding: 14px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #1f1f1f;
+    color: #bbb;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+.channel-item:hover {
+    background: #222;
+    color: #fff;
+}
+.channel-item.active {
+    background: #0084ff22;
+    color: #0084ff;
+    border-left: 4px solid #0084ff;
+    font-weight: bold;
+}
+.player-area {
+    flex: 1;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.video-js {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Popup Styles */
+.popup{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;justify-content:center;align-items:center;z-index: 999;}
 .popup-box{background:#111;padding:25px;border-radius:15px;width:90%;max-width:380px;text-align:center}
 .popup-box button{width:100%;margin-top:10px;padding:12px;border:none;border-radius:10px;cursor:pointer}
 .join{background:#fff}
 .already{background:#222;color:#fff}
 footer{text-align:center;padding:30px;border-top:1px solid #222}
+
+/* Mobile Responsive adjustment for Stream Box */
+@media(max-width: 768px) {
+    .stream-container {
+        flex-direction: column;
+        height: auto;
+    }
+    .channel-sidebar {
+        width: 100%;
+        height: 180px;
+    }
+    .player-area {
+        order: -1; /* Video mobile me upar dikhegi, channels neeche */
+        height: 250px;
+    }
+}
 </style>
 </head>
 <body>
-  <div class="popup" id="popup">
-<div class="popup-box">
-<h2>Join AMANCEPTION</h2>
-<p>Sports Community</p>
-<button class="join" onclick="joinTelegram()">Join Now</button>
-<button class="already" onclick="closePopup()">Already Joined</button>
-</div>
+
+<div class="popup" id="popup">
+    <div class="popup-box">
+        <h2>Join AMANCEPTION</h2>
+        <p>Sports Community</p>
+        <button class="join" onclick="joinTelegram()">Join Now</button>
+        <button class="already" onclick="closePopup()">Already Joined</button>
+    </div>
 </div>
 
 <header>
-<div class="logo">🛑 AMANCEPTION</div>
-<nav>
-<a href="#categories">Categories</a>
-<a href="#contact">Contact</a>
-</nav>
+    <div class="logo">🛑 AMANCEPTION</div>
+    <nav>
+        <a href="#live-tv">📺 Live Stream</a>
+        <a href="#categories">Categories</a>
+        <a href="#contact">Contact</a>
+    </nav>
 </header>
 
 <section class="hero">
-<div>
-<h1>A Sports Enthusiasts Community!</h1>
-<p>Cricket • Football • IPL • Formula 1 • UFC</p>
-<a class="btn" href="https://t.me/amanception" target="_blank">Join Telegram</a>
-</div>
+    <div>
+        <h1>A Sports Enthusiasts Community!</h1>
+        <p>Cricket • Football • IPL • Formula 1 • UFC</p>
+        <a class="btn" href="https://t.me/amanception" target="_blank">Join Telegram</a>
+    </div>
 </section>
-<section class="section">
+
+<section id="live-tv" class="section">
+    <h2 style="text-align:center; margin-bottom: 30px;">📺 AMANCEPTION LIVE TV</h2>
+    
+    <div class="stream-container">
+        <div class="channel-sidebar">
+            <div class="sidebar-header">Select Channel</div>
+            <ul class="channel-list" id="channels">
+                <li class="channel-item active" data-src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">Demo Sports Channel 1</li>
+                <li class="channel-item" data-src="https://playertest.longtailvideo.com/adaptive/bipbop/bipbop.m3u8">Demo Sports Channel 2</li>
+            </ul>
+        </div>
+        
+        <div class="player-area">
+            <video id="my-iptv-player" class="video-js vjs-theme-city" controls preload="auto" autoplay muted playsinline></video>
+        </div>
+    </div>
+</section>
 
 <section id="categories" class="section">
-<h2 style="text-align:center;margin-bottom:20px">Categories</h2>
-<div class="grid">
-<div class="card">🏏 Cricket</div>
-<div class="card">⚽ Football</div>
-<div class="card">🏆 IPL</div>
-<div class="card">🏎️ Formula 1</div>
-<div class="card">🥊 UFC</div>
-</div>
+    <h2 style="text-align:center;margin-bottom:20px">Categories</h2>
+    <div class="grid">
+        <div class="card">🏏 Cricket</div>
+        <div class="card">⚽ Football</div>
+        <div class="card">🏆 IPL</div>
+        <div class="card">🏎️ Formula 1</div>
+        <div class="card">🥊 UFC</div>
+    </div>
 </section>
 
 <section id="contact" class="section">
-<div class="card">
-<h2>Contact</h2>
-<p>amanceptionx@gmail.com</p>
-</div>
+    <div class="card">
+        <h2>Contact</h2>
+        <p>amanceptionx@gmail.com</p>
+    </div>
 </section>
+
 <footer>© 2026 AMANCEPTION</footer>
+
+<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+
 <script>
+// ⚠️ EDIT HERE: Apna Cloudflare Worker Proxy URL yahan lagao (last me '/' zaroor lagana)
+const PROXY_URL = "https://my-iptv-proxy.YOUR-USERNAME.workers.dev/";
+
 function joinTelegram(){
-window.open('https://t.me/amanception','_blank');
-document.getElementById('popup').style.display='none';
+    window.open('https://t.me/amanception','_blank');
+    document.getElementById('popup').style.display='none';
 }
 function closePopup(){
-document.getElementById('popup').style.display='none';
+    document.getElementById('popup').style.display='none';
+}
+
+// Video.js Player Logic
+const player = videojs('my-iptv-player', {
+    fluid: true,
+    userActions: { hotkeys: true }
+});
+
+const channelItems = document.querySelectorAll('.channel-item');
+
+function changeChannel(rawUrl) {
+    // Worker proxy ke sath secure link inject karna
+    const finalUrl = PROXY_URL + "?url=" + encodeURIComponent(rawUrl);
+
+    player.src({
+        src: finalUrl,
+        type: 'application/x-mpegURL'
+    });
+    
+    player.ready(function() {
+        player.play().catch(function(error) {
+            console.log("Autoplay context require handling:", error);
+        });
+    });
+}
+
+// Click listener for changing stream
+channelItems.forEach(item => {
+    item.addEventListener('click', function() {
+        channelItems.forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+        changeChannel(this.getAttribute('data-src'));
+    });
+});
+
+// Auto play first channel on load
+if (channelItems.length > 0) {
+    changeChannel(channelItems[0].getAttribute('data-src'));
 }
 </script>
-
 </body>
 </html>
