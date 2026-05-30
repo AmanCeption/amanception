@@ -22,7 +22,7 @@ nav a{color:#fff;text-decoration:none;margin-left:16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
 .card{background:#111;border:1px solid #222;border-radius:14px;padding:20px;text-align:center}
 
-/* IPTV Streaming Section Custom Layout */
+/* IPTV Streaming Section Layout */
 .stream-container {
     display: flex;
     max-width: 1200px;
@@ -145,9 +145,8 @@ footer{text-align:center;padding:30px;border-top:1px solid #222}
         <div class="channel-sidebar">
             <div class="sidebar-header">Select Channel</div>
             <ul class="channel-list" id="channels">
-                <li class="channel-item active" data-src="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8">Mux Test Stream</li>
-                <li class="channel-item" data-src="https://playertest.longtailvideo.com/adaptive/bipbop/bipbop.m3u8">BipBop Test Stream</li>
-                <li class="channel-item" data-src="https://sonydaimenew.akamaized.net/hls/live/2018457/RG_Phili3005/ENG/master_1300.m3u8">Sony Ten Live (Expired Token)</li>
+                <li class="channel-item active" data-src="https://sonydaimenew.akamaized.net/hls/live/2018457/RG_Phili3005/ENG/hdntl=exp=1780232116~acl=%2f*~id=67b0de5d-27bb-4c82-ba31-80b7c87bd4cc~data=hdntl,2018457,RG_Phili3005,ENG~hmac=e6af30d614a19e6de258c4455ed9df32791fe8857c43c0090abd370f7fbf9fbf/master_600.m3u8?aka_me_session_id=AAAAAAAAAAC0LxxqAAAAAKe2xYOn0HO98y%2fzi6Rf4nWrf8lN%2fkPCg8LOpGliC0WOQ7BSsLMnqiIeSt0MxSOB9JoItdIDP0cn&aka_media_format_type=hls&originpath=/linear/hls/pb/event/X3j0O-G-QEaPSp8yNcP9Jg/stream/6fdaa5a9-971d-4db6-b714-06e06d52c521:TPE2/variant/2ad6dd8fd3a49c636c43be92d40d650b/bandwidth/837256.m3u8">SONY TEN LIVE (HD)</li>
+                <li class="channel-item" data-src="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8">Mux Test Stream</li>
             </ul>
         </div>
         
@@ -190,25 +189,25 @@ function closePopup(){
     document.getElementById('popup').style.display='none';
 }
 
-// 🌟 OPTIMIZED PLAYER ENGINE FOR HLS WRAPPING
+// Optimized Player configuration
 const player = videojs('my-iptv-player', {
     fluid: true,
     preload: 'auto',
     controls: true,
     html5: {
-        vhs: {
-            overrideNative: true,
-            allowSeeksWithinLiveWindow: true
-        }
+        vhs: { overrideNative: true }
     }
 });
 
 const channelItems = document.querySelectorAll('.channel-item');
 
 function changeChannel(rawUrl) {
-    // URL encode karke proxy ke through route karna
-    const finalUrl = PROXY_URL + "?url=" + encodeURIComponent(rawUrl.trim());
-    console.log("Routing via Engine:", finalUrl);
+    // 🛠️ CLEANING LAYER: Agar URL ke piche Stream Detector ka |User-Agent... laga hai toh use hatayenge kyuki hamara worker use automatic inject karta hai
+    let cleanUrl = rawUrl.split('|')[0].trim();
+    
+    // Proxy query injection
+    const finalUrl = PROXY_URL + "?url=" + encodeURIComponent(cleanUrl);
+    console.log("Routing via Reverse Proxy Engine:", finalUrl);
 
     player.src({
         src: finalUrl,
@@ -217,11 +216,12 @@ function changeChannel(rawUrl) {
     
     player.ready(function() {
         player.play().catch(function(error) {
-            console.log("Autoplay context handled:", error);
+            console.log("Autoplay handler:", error);
         });
     });
 }
 
+// Click listener
 channelItems.forEach(item => {
     item.addEventListener('click', function() {
         channelItems.forEach(el => el.classList.remove('active'));
@@ -230,6 +230,7 @@ channelItems.forEach(item => {
     });
 });
 
+// Auto play first channel on load
 if (channelItems.length > 0) {
     changeChannel(channelItems[0].getAttribute('data-src'));
 }
